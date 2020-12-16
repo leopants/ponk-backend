@@ -5,7 +5,11 @@ const app = express()
 
 app.use(bodyParser.json())
 
-app.get('/', async (req, res) => {
+app.get('/', function (req, res) {
+      res.send("Hello ponk")
+})
+
+app.get('/getusers', async (req, res) => {
       const user = await userModel.find({})
       try {
             res.send(user)
@@ -39,12 +43,33 @@ app.post('/createuser', async (req, res) => {
       }
 })
 
-app.put('/updateuser', function (req, res) {
+app.put('/updateuser', async (req, res) => {
+      try {
+            username = req.body.username
+            user = await userModel.find({username})
+            userID = user[0]._id
+            await userModel.findByIdAndUpdate(userID, req.body)
+            await userModel.save()
+            res.send(200)
+      } catch (err) {
+            res.status(404).send(err)
+      }
       res.send('update user')
 })
 
-app.delete('/deleteuser', function (req, res) {
-      res.send('delete user')
+app.delete('/deleteuser', async (req, res) => {
+      try {
+            username = req.body.username
+            user = await userModel.find({username})
+            userID = user[0]._id
+            const userToDelete = await userModel.findByIdAndDelete(userID, req.body)
+            if (!userToDelete) {
+                  res.status(404).send("No item found")
+            }
+            res.status(200).send()
+      } catch (err) {
+            res.status(400).send(err)
+      }
 })
 
 async function checkUser(username,email) {
