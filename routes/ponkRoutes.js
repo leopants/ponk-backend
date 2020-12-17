@@ -75,11 +75,11 @@ app.delete('/deleteuser', async (req, res) => {
 async function checkUser(username,email) {
       let userNameFound = await userModel.find({username})
       let emailFound = await userModel.find({email})
-
-      if(userNameFound) {
+      
+      if(userNameFound.length > 0) {
             return 2
       }
-      else if(emailFound) {
+      else if(emailFound.length > 0) {
             return 1
       }
       else {
