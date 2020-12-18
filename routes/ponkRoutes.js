@@ -18,6 +18,28 @@ app.get('/getusers', async (req, res) => {
       }
 })
 
+app.get('/checkuser', async (req, res) => {
+      usernameOrEmail = req.body.usernameOrEmail
+      userPassword = req.body.password
+      try {
+            const user = await userModel.find({usernameOrEmail})
+            if(user.length > 0) {
+                  if(userPassword == user[0].password) {
+                        res.send(200)
+                  }
+                  else {
+                        res.status(400).send('Passwords do not match')
+                  }
+            }
+            else {
+                  res.status(400).send('Username or email incorrect')
+            }
+            res.send(user)
+      } catch (err) {
+            res.status(500).send(err)
+      }
+})
+
 app.post('/createuser', async (req, res) => {
       username = req.body.username
       email = req.body.email
@@ -49,12 +71,10 @@ app.put('/updateuser', async (req, res) => {
             user = await userModel.find({username})
             userID = user[0]._id
             await userModel.findByIdAndUpdate(userID, req.body)
-            await userModel.save()
             res.send(200)
       } catch (err) {
             res.status(404).send(err)
       }
-      res.send('update user')
 })
 
 app.delete('/deleteuser', async (req, res) => {
