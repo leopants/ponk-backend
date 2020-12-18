@@ -19,10 +19,10 @@ app.get('/getusers', async (req, res) => {
 })
 
 app.get('/checkuser', async (req, res) => {
-      usernameOrEmail = req.body.usernameOrEmail
-      userPassword = req.body.password
+      usernameOrEmail = req.query.usernameOrEmail
+      userPassword = req.query.password
       try {
-            const user = await userModel.find({usernameOrEmail})
+            const user = await userModel.find({ $or: [ {username: usernameOrEmail}, {email: usernameOrEmail} ] })
             if(user.length > 0) {
                   if(userPassword == user[0].password) {
                         res.send(200)
