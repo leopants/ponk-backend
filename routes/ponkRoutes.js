@@ -27,7 +27,7 @@ app.get("/checkuser", async (req, res) => {
         });
         if (user.length > 0) {
             if (userPassword == user[0].password) {
-                res.send(user, 200);
+                res.status(200).json(user);
             } else {
                 res.status(400).send("Passwords do not match");
             }
